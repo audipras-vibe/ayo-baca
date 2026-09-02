@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { level1, level2, level3, level4, rarityInfo } from '../lib/data.ts';
+import { level1, level2, level3, level4, rarityInfo, soundConsonants, soundSeries, soundVowels } from '../lib/data.ts';
 import { awardCorrect, rarityForRoll, shuffle, spendGacha } from '../lib/game.ts';
 
 test('setiap level berisi tepat 100 item unik', () => {
@@ -17,6 +17,13 @@ test('data suku kata sesuai dengan tingkat kesulitan', () => {
   assert.ok(level2.every((item) => item.syllables.length === 3 && item.syllables.every(isOpenShort) && item.syllables.join('') === item.normal));
   assert.ok(level3.every((item) => item.syllables.length >= 2 && item.syllables.length <= 3 && item.syllables.join('') === item.normal));
   assert.ok(level4.every((item) => item.trim().split(/\s+/).length === 2));
+});
+
+test('latihan bunyi memuat semua konsonan dengan urutan vokal aiueo', () => {
+  assert.equal(soundConsonants.join(''), 'bcdfghjklmnpqrstvwxyz');
+  assert.deepEqual(soundVowels, ['a', 'i', 'u', 'e', 'o']);
+  assert.deepEqual(soundSeries[0].sounds, ['ba', 'bi', 'bu', 'be', 'bo']);
+  assert.deepEqual(soundSeries.at(-1)?.sounds, ['za', 'zi', 'zu', 'ze', 'zo']);
 });
 
 test('shuffle mempertahankan semua item tanpa pengulangan', () => {

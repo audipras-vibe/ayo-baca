@@ -1,5 +1,12 @@
 export type WordItem = { normal: string; syllables: string[] };
 
+export const soundVowels = ['a', 'i', 'u', 'e', 'o'] as const;
+export const soundConsonants = 'bcdfghjklmnpqrstvwxyz'.split('');
+export const soundSeries = soundConsonants.map((consonant) => ({
+  consonant,
+  sounds: soundVowels.map((vowel) => `${consonant}${vowel}`),
+}));
+
 const openTwo = `bu-ku me-ja bo-la sa-pi ku-da to-pi ba-ju ro-ti na-si su-su gi-gi ka-ki ma-ta pi-pi da-hi pa-ku pa-lu ta-li ba-tu be-si ka-ca sa-pu ru-sa la-ba ku-pu du-ku la-bu pe-na pi-ta pe-ta ro-da da-du te-ko sa-ku bu-sa pi-pa fo-to ta-hu to-ge cu-mi te-ri le-le ba-bi ke-ra ku-tu tu-na ku-ra pa-ri hi-u ko-ta de-sa to-ko ta-mu gu-ru ba-yi ma-ma pa-pa i-bu a-pi u-bi a-bu o-li a-ki da-da ba-hu ku-ku bu-lu si-ku ko-pi so-da ke-ju ma-du sa-te so-to na-ga bu-mi ba-ra gu-a ka-li ra-wa pa-gi so-re ha-ri si-ni sa-na ma-na sa-ya ka-mu ki-ta di-a a-yo i-ya a-da a-pa ma-u be-ri be-li ca-ri la-ri ba-ca`.split(' ');
 
 const openThreeCore = `ke-la-pa se-pa-tu pe-pa-ya ke-me-ja ce-la-na bo-ne-ka se-pe-da le-ma-ri bu-a-ya gu-ri-ta ce-ri-a de-li-ma u-da-ra ca-ha-ya du-ni-a ce-ri-ta ba-ha-sa su-a-ra ne-ga-ra pe-ta-ni`.split(' ');

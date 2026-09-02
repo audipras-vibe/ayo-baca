@@ -1,0 +1,96 @@
+.action-button.sounds {
+  grid-column: 1 / -1;
+  justify-content: flex-start;
+  background: #fff0b9;
+  border: 2px solid #f0c34b;
+  padding: 16px 22px;
+}
+
+.action-button.sounds span { flex: 1; }
+.action-button.sounds > b { font-size: .9rem; color: #8b6710; }
+.no-coin { color: #8b6710; background: #fff8d9; border-color: #f0d478; }
+
+.sound-card {
+  min-height: min(46vh, 390px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 3px solid #f0d478;
+  border-radius: 38px;
+  box-shadow: var(--shadow);
+  padding: 28px;
+  text-align: center;
+}
+
+.sound-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: clamp(14px, 3vw, 34px);
+  font-size: clamp(2.6rem, 8vw, 6rem);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.sound-part { padding: .12em .16em; border-radius: .25em; background: #f7fbfd; }
+.sound-part.s0 { color: #e4665f; }
+.sound-part.s1 { color: #438fe0; }
+.sound-part.s2 { color: #38a674; }
+
+.sound-navigation {
+  width: min(460px, 100%);
+  display: grid;
+  grid-template-columns: 58px 1fr 58px;
+  align-items: center;
+  gap: 14px;
+  margin-top: 44px;
+}
+
+.sound-navigation strong { font-size: 1.05rem; color: var(--muted); }
+.sound-arrow {
+  width: 58px;
+  height: 52px;
+  border: 2px solid #a9c4d2;
+  background: #fff;
+  border-radius: 17px;
+  font-size: 1.5rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.consonant-picker {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  gap: 9px;
+  margin: 20px auto 12px;
+  width: min(820px, 100%);
+}
+
+.consonant-picker button {
+  aspect-ratio: 1;
+  border: 2px solid #cbdde5;
+  border-radius: 14px;
+  background: #fff;
+  font-weight: 900;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.consonant-picker button.active {
+  background: #ffcf58;
+  border-color: #dfa72c;
+  box-shadow: 0 4px 0 #d6a234;
+}
+
+@media (max-width: 720px) {
+  .action-button.sounds { grid-column: auto; padding: 13px 16px; }
+  .action-button.sounds > b { display: none; }
+  .sound-card { min-height: 42vh; border-radius: 28px; padding: 20px 10px; }
+  .sound-row { gap: 10px; font-size: clamp(2.2rem, 13vw, 4rem); }
+  .sound-navigation { margin-top: 34px; }
+  .consonant-picker { grid-template-columns: repeat(7, 1fr); gap: 7px; }
+  .consonant-picker button { border-radius: 11px; font-size: .9rem; }
+}

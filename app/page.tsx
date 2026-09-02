@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { levels, rarityInfo, rewards, type WordItem } from '../lib/data';
+import { levels, rarityInfo, rewards, soundSeries, type WordItem } from '../lib/data';
 import { awardCorrect, drawReward, shuffle, spendGacha } from '../lib/game';
 import { clearState, loadState, saveState, type Collection, type Progress } from '../lib/storage';
 
-type Screen = 'home'|'practice'|'done'|'gacha'|'collection'|'parents';
+type Screen = 'home'|'practice'|'done'|'sounds'|'gacha'|'collection'|'parents';
 type PracticeItem = WordItem|string;
 const cheers = ['Hebat!','Bagus!','Keren!','Pintar!','Luar biasa!'];
 const rarityClass = (name:string) => name.toLowerCase();
@@ -18,6 +18,7 @@ export default function Home() {
   const [levelIndex,setLevelIndex] = useState(0);
   const [queue,setQueue] = useState<PracticeItem[]>([]);
   const [question,setQuestion] = useState(0);
+  const [soundIndex,setSoundIndex] = useState(0);
   const [awarded,setAwarded] = useState(false);
   const [cheer,setCheer] = useState('');
   const [notice,setNotice] = useState('');
@@ -62,6 +63,7 @@ export default function Home() {
     {screen==='home'&&<HomeScreen startLevel={startLevel} go={go} progress={progress}/>} 
     {screen==='practice'&&item&&<Practice levelIndex={levelIndex} item={item} number={question+1} total={queue.length} awarded={awarded} cheer={cheer} notice={notice} retry={retry} correct={correct} back={()=>go('home')}/>} 
     {screen==='done'&&<Done levelIndex={levelIndex} replay={()=>startLevel(levelIndex)} home={()=>go('home')}/>} 
+    {screen==='sounds'&&<SoundPractice index={soundIndex} select={setSoundIndex} home={()=>go('home')}/>} 
     {screen==='gacha'&&<Gacha coins={coins} state={gachaState} prize={prize} notice={notice} pull={pullGacha} skip={skipGacha} closeResult={()=>{setGachaState('idle');setPrize(null)}} home={()=>go('home')}/>} 
     {screen==='collection'&&<CollectionScreen collection={collection} home={()=>go('home')}/>} 
     {screen==='parents'&&<Parents reset={reset} notice={notice} home={()=>go('home')}/>} 
@@ -70,7 +72,7 @@ export default function Home() {
 }
 
 function HomeScreen({startLevel,go,progress}:{startLevel:(i:number)=>void;go:(s:Screen)=>void;progress:Progress}){
-  return <><section className="hero"><div className="mascot" aria-hidden="true">📖</div><p className="eyebrow">BELAJAR SAMBIL BERMAIN</p><h1>Halo, Pembaca Hebat!</h1><p className="subtitle">Pilih petualangan membacamu!</p></section><section className="level-grid" aria-label="Pilih level membaca">{levels.map((level,index)=><button className={`level-card color-${index+1}`} key={level.title} onClick={()=>startLevel(index)}><span className="level-number">LEVEL {index+1}</span><span className="level-icon" aria-hidden="true">{level.icon}</span><strong>{level.title}</strong><span className="level-example">{level.example}</span><span className="level-note">{level.note}</span><span className="level-progress">Terbaik: {progress[String(index+1)]??0}/100</span><span className="play-label">Mulai →</span></button>)}</section><nav className="home-actions" aria-label="Menu hadiah"><button className="action-button gacha" onClick={()=>go('gacha')}>✨ <span><strong>Gacha Hadiah</strong><small>5 koin sekali buka</small></span></button><button className="action-button collection" onClick={()=>go('collection')}>🎒 <span><strong>Koleksiku</strong><small>Lihat hadiahmu</small></span></button></nav></>;
+  return <><section className="hero"><div className="mascot" aria-hidden="true">📖</div><p className="eyebrow">BELAJAR SAMBIL BERMAIN</p><h1>Halo, Pembaca Hebat!</h1><p className="subtitle">Pilih petualangan membacamu!</p></section><section className="level-grid" aria-label="Pilih level membaca">{levels.map((level,index)=><button className={`level-card color-${index+1}`} key={level.title} onClick={()=>startLevel(index)}><span className="level-number">LEVEL {index+1}</span><span className="level-icon" aria-hidden="true">{level.icon}</span><strong>{level.title}</strong><span className="level-example">{level.example}</span><span className="level-note">{level.note}</span><span className="level-progress">Terbaik: {progress[String(index+1)]??0}/100</span><span className="play-label">Mulai →</span></button>)}</section><nav className="home-actions" aria-label="Menu latihan dan hadiah"><button className="action-button sounds" onClick={()=>go('sounds')}>🔤 <span><strong>Latihan Bunyi</strong><small>ba · bi · bu · be · bo — tanpa koin</small></span><b>Mulai →</b></button><button className="action-button gacha" onClick={()=>go('gacha')}>✨ <span><strong>Gacha Hadiah</strong><small>5 koin sekali buka</small></span></button><button className="action-button collection" onClick={()=>go('collection')}>🎒 <span><strong>Koleksiku</strong><small>Lihat hadiahmu</small></span></button></nav></>;
 }
 
 function BackButton({onClick}:{onClick:()=>void}){return <button className="back-button" onClick={onClick} aria-label="Kembali ke menu">← Menu</button>}
@@ -82,6 +84,12 @@ function Practice({levelIndex,item,number,total,awarded,cheer,notice,retry,corre
 }
 
 function Done({levelIndex,replay,home}:{levelIndex:number;replay:()=>void;home:()=>void}){return <section className="scene center-scene"><div className="celebration" aria-hidden="true">🎉</div><p className="eyebrow">LEVEL {levelIndex+1} SELESAI</p><h1>Luar biasa!</h1><p className="big-copy">Kamu berhasil membaca <strong>100 latihan</strong>.</p><div className="stack-actions"><button className="primary-button" onClick={replay}>↻ Main Lagi</button><button className="secondary-button" onClick={home}>Kembali ke Menu</button></div></section>}
+
+function SoundPractice({index,select,home}:{index:number;select:(index:number)=>void;home:()=>void}){
+  const series=soundSeries[index];
+  const move=(step:number)=>select((index+step+soundSeries.length)%soundSeries.length);
+  return <section className="scene sound-scene"><div className="scene-head"><BackButton onClick={home}/><div><span className="mini-label">DASAR MEMBACA</span><h2>Latihan Bunyi</h2></div><span className="counter no-coin">Tanpa koin</span></div><div className="sound-card"><p className="instruction">Baca dari kiri ke kanan dengan lantang</p><div className="sound-row" aria-label={series.sounds.join(' ')}>{series.sounds.map((sound,i)=><span className={`sound-part s${i%3}`} key={sound}>{sound}</span>)}</div><div className="sound-navigation"><button className="sound-arrow" onClick={()=>move(-1)} aria-label="Konsonan sebelumnya">←</button><strong>Huruf {series.consonant.toUpperCase()}</strong><button className="sound-arrow" onClick={()=>move(1)} aria-label="Konsonan berikutnya">→</button></div></div><div className="consonant-picker" aria-label="Pilih huruf konsonan">{soundSeries.map((item,i)=><button className={i===index?'active':''} aria-pressed={i===index} onClick={()=>select(i)} key={item.consonant}>{item.consonant.toUpperCase()}</button>)}</div><p className="helper">Latihan ini bebas diulang dan tidak menambah atau mengurangi koin.</p></section>;
+}
 
 function Gacha({coins,state,prize,notice,pull,skip,closeResult,home}:{coins:number;state:string;prize:(typeof rewards)[number]|null;notice:string;pull:()=>void;skip:()=>void;closeResult:()=>void;home:()=>void}){return <section className="scene"><div className="scene-head"><BackButton onClick={home}/><div><span className="mini-label">KEJUTAN MENANTI</span><h2>Gacha Hadiah</h2></div><span className="counter">🪙 {coins}</span></div><div className="gacha-layout"><div className="gacha-stage"><div className={`capsule ${state} ${prize?rarityClass(prize.rarity):''}`} aria-live="polite">{state==='open'&&prize?<><span className="prize-icon">{prize.icon}</span><strong>{prize.name}</strong><span className="rarity-name">{prize.rarity}</span></>:<><span className="capsule-star">★</span><span>{state==='shaking'?'Ada kejutan!':'5 koin'}</span></>}</div>{state==='shaking'?<button className="skip-link" onClick={skip}>Lewati animasi</button>:state==='open'?<button className="primary-button" onClick={closeResult}>Buka Lagi</button>:<button className="primary-button" onClick={pull}>✨ Mulai Gacha</button>}<p className="notice" role="status">{notice}</p></div><aside className="odds-card"><h3>Peluang Hadiah</h3><p>Setiap hadiah punya tingkat kelangkaan.</p><ul>{rarityInfo.map((r)=><li key={r.name}><span className="rarity-dot" style={{background:r.color}}/><strong>{r.name}</strong><span>{r.chance}%</span></li>)}</ul></aside></div></section>}
 
